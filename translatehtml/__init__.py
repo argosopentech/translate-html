@@ -1,0 +1,1 @@
+from translatehtml.translatehtml import *
