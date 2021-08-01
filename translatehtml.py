@@ -5,10 +5,41 @@ import argostranslate
 from argostranslate.tags import *
 from argostranslate import package, translate
 
+
+class HTMLTag(Tag):
+    pass
+
+
+def itag_of_soup(soup):
+    if isinstance(soup, bs4.element.NavigableString):
+        return str(soup)
+    elif len(soup.contents) == 0:
+        to_return = HTMLTag(list())
+    elif len(soup.contents) == 1 and isinstance(
+        soup.contents[0], bs4.element.NavigableString
+    ):
+        to_return = HTMLTag([str(soup.contents[0])])
+    else:
+        to_return = HTMLTag([itag_of_soup(content) for content in soup.contents])
+    to_return.soup = soup
+    return to_return
+
+
+def soup_of_itag(itag):
+    if type(itag) == str:
+        return bs4.element.NavigableString(itag)
+    soup = itag.soup
+    if is_tag_literal(itag):
+        soup.contents = [bs4.element.NavigableString(itag.text())]
+    elif isinstance(itag, argostranslate.tags.Tag):
+        soup.contents = [soup_of_itag(content) for content in itag.children()]
+    return soup
+
+
 installed_languages = translate.get_installed_languages()
 translation_en_es = installed_languages[0].get_translation(installed_languages[1])
 
-read_file = True
+read_file = False
 
 if not read_file:
     html_doc = """
@@ -27,50 +58,13 @@ if not read_file:
 
     soup = BeautifulSoup(html_doc, "html.parser")
 else:
-    soup = BeautifulSoup(open("index.html"))
-
-
-class HTMLTag(Tag):
-    pass
-
-
-class HTMLTagLiteral(TagLiteral):
-    pass
-
-
-def itag_of_soup(soup):
-    if isinstance(soup, bs4.element.NavigableString):
-        return str(soup)
-    elif len(soup.contents) == 0:
-        to_return = HTMLTag(list())
-    elif len(soup.contents) == 1 and isinstance(
-        soup.contents[0], bs4.element.NavigableString
-    ):
-        to_return = HTMLTagLiteral(str(soup.contents[0]))
-    else:
-        to_return = HTMLTag([itag_of_soup(content) for content in soup.contents])
-    to_return.soup = soup
-    return to_return
+    soup = BeautifulSoup(open("index.html"), "html.parser")
 
 
 htmltag = itag_of_soup(soup)
 
-print(htmltag)
 
 translated_tags = translate_tags(translation_en_es, htmltag)
-
-print(translated_tags)
-
-
-def soup_of_itag(itag):
-    if type(itag) == str:
-        return bs4.element.NavigableString(itag)
-    soup = itag.soup
-    if isinstance(itag, argostranslate.tags.TagLiteral):
-        soup.contents = [bs4.element.NavigableString(itag.text())]
-    elif isinstance(itag, argostranslate.tags.Tag):
-        soup.contents = [soup_of_itag(content) for content in itag.children()]
-    return soup
 
 
 translated_soup = soup_of_itag(translated_tags)
