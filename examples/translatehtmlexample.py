@@ -1,7 +1,14 @@
 from translatehtml import *
 
+import argostranslate
+from argostranslate import translate
+from argostranslate.tags import translate_tags
+
+import bs4
+from bs4 import BeautifulSoup
+
 installed_languages = translate.get_installed_languages()
-translation_en_es = installed_languages[0].get_translation(installed_languages[1])
+underlying_translation = installed_languages[0].get_translation(installed_languages[1])
 
 read_file = False
 
@@ -28,10 +35,9 @@ else:
 htmltag = itag_of_soup(soup)
 
 
-translated_tags = translate_tags(translation_en_es, htmltag)
+translated_tags = translate_tags(underlying_translation, htmltag)
 
 
 translated_soup = soup_of_itag(translated_tags)
 
 print(translated_soup)
-
