@@ -6,6 +6,14 @@ from argostranslate.tags import Tag, translate_tags
 
 
 def itag_of_soup(soup):
+    """Returns an argostranslate.tags.ITag tree from a BeautifulSoup object.
+
+    Args:
+        soup (bs4.element.Navigablestring or bs4.element.Tag): Beautiful Soup object
+
+    Returns:
+        argostranslate.tags.ITag: Argos Translate ITag tree
+    """
     if isinstance(soup, bs4.element.NavigableString):
         return str(soup)
     to_return = Tag([itag_of_soup(content) for content in soup.contents])
@@ -14,6 +22,14 @@ def itag_of_soup(soup):
 
 
 def soup_of_itag(itag):
+    """Returns a BeautifulSoup object from an Argos Translate ITag.
+
+    Args:
+        itag (argostranslate.tags.ITag): ITag object to convert to Soup
+
+    Returns:
+        bs4.elements.BeautifulSoup: BeautifulSoup object
+    """
     if type(itag) == str:
         return bs4.element.NavigableString(itag)
     soup = itag.soup
@@ -22,6 +38,15 @@ def soup_of_itag(itag):
 
 
 def translate_html(underlying_translation, html):
+    """Translate HTML str.
+
+    Args:
+        underlying_translation (argostranslate.translate.ITranslation): Argos Translate Translation
+        html (str): An HTML string
+
+    Returns:
+        str: Translated HTML string
+    """
     soup = BeautifulSoup(html, "html.parser")
     itag = itag_of_soup(soup)
     translated_tag = translate_tags(underlying_translation, itag)
