@@ -2,7 +2,7 @@ import bs4
 from bs4.element import NavigableString
 
 import argostranslate
-from argostranslate.tags import Tag
+from argostranslate.tags import Tag, translate_tags
 
 
 def itag_of_soup(soup):
@@ -19,3 +19,11 @@ def soup_of_itag(itag):
     soup = itag.soup
     soup.contents = [soup_of_itag(child) for child in itag.children]
     return soup
+
+
+def translate_html(underlying_translation, html):
+    soup = BeautifulSoup(html, "html.parser")
+    itag = itag_of_soup(soup)
+    translated_tag = translate_tags(underlying_translation, itag)
+    translated_soup = soup_of_itag(translated_tag)
+    return translated_soup
