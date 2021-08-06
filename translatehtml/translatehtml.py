@@ -5,6 +5,19 @@ from bs4.element import NavigableString
 import argostranslate
 from argostranslate.tags import Tag, translate_tags
 
+NON_TRANSLATEABLE_TAGS = [
+    "address",
+    "applet",
+    "audio",
+    "canvas",
+    "code",
+    "embed",
+    "script",
+    "style",
+    "time",
+    "video",
+]
+
 
 def itag_of_soup(soup):
     """Returns an argostranslate.tags.ITag tree from a BeautifulSoup object.
@@ -17,7 +30,8 @@ def itag_of_soup(soup):
     """
     if isinstance(soup, bs4.element.NavigableString):
         return str(soup)
-    to_return = Tag([itag_of_soup(content) for content in soup.contents])
+    translateable = soup.name not in NON_TRANSLATEABLE_TAGS
+    to_return = Tag([itag_of_soup(content) for content in soup.contents], translateable)
     to_return.soup = soup
     return to_return
 
