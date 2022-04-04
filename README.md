@@ -6,6 +6,8 @@ Translate HTML using [Beautiful Soup](https://beautiful-soup-4.readthedocs.io/en
 pip install translatehtml
 ```
 
+## [Example usage](examples/)
+
 ## Links
 - [Developement video](https://www.youtube.com/watch?v=S28XOIvRzwo&list=PLe6dpCSdH0zRlFBBzE1mfdRv6CWttmkcL)
 - [OpenNMT Forum](https://forum.opennmt.net/t/suggestions-for-translating-xml/4409)
