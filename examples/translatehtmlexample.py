@@ -4,6 +4,8 @@ import translatehtml
 from_code = "es"
 to_code = "en"
 
+html_doc = """<div><h1>Perro</h1></div>"""
+
 # Download and install Argos Translate package
 available_packages = argostranslate.package.get_available_packages()
 available_package = list(
@@ -20,8 +22,6 @@ from_lang = list(filter(lambda x: x.code == from_code, installed_languages))[0]
 to_lang = list(filter(lambda x: x.code == to_code, installed_languages))[0]
 
 translation = from_lang.get_translation(to_lang)
-
-html_doc = """<div><h1>Perro</h1></div>"""
 
 translated_soup = translatehtml.translate_html(translation, html_doc)
 
