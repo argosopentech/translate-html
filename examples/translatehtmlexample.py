@@ -1,31 +1,28 @@
-import argostranslate
-from argostranslate import translate
-from argostranslate.tags import translate_tags
-
-import bs4
-from bs4 import BeautifulSoup
-
+import argostranslate.package, argostranslate.translate
 import translatehtml
-from translatehtml import *
 
+from_code = "es"
+to_code = "en"
 
-# Requires Argos Translate installed languages
-installed_languages = translate.get_installed_languages()
-underlying_translation = installed_languages[0].get_translation(installed_languages[1])
+# Download and install Argos Translate package
+available_packages = argostranslate.package.get_available_packages()
+available_package = list(
+    filter(
+        lambda x: x.from_code == from_code and x.to_code == to_code, available_packages
+    )
+)[0]
+download_path = available_package.download()
+argostranslate.package.install_from_path(download_path)
 
-html_doc = """<html><head><title>The Dormouse's story</title></head>
-<body>
-<p class="title"><b>The Dormouse's story</b></p>
+# Translate
+installed_languages = argostranslate.translate.get_installed_languages()
+from_lang = list(filter(lambda x: x.code == from_code, installed_languages))[0]
+to_lang = list(filter(lambda x: x.code == to_code, installed_languages))[0]
 
-<p class="story">Once upon a time there were three little sisters; and their names were
-<a href="http://example.com/elsie" class="sister" id="link1">Elsie</a>,
-<a href="http://example.com/lacie" class="sister" id="link2">Lacie</a> and
-<a href="http://example.com/tillie" class="sister" id="link3">Tillie</a>;
-and they lived at the bottom of a well.</p>
+translation = from_lang.get_translation(to_lang)
 
-<p class="story">...</p>
-"""
+html_doc = """<div><h1>Perro</h1></div>"""
 
-translated_soup = translate_html(underlying_translation, html_doc)
+translated_soup = translatehtml.translate_html(translation, html_doc)
 
 print(translated_soup)
