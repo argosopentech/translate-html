@@ -7,7 +7,7 @@ pip install translatehtml
 ```
 
 ## [Example](examples/)
-```
+```python
 import argostranslate.package, argostranslate.translate
 import translatehtml
 
