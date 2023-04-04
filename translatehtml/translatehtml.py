@@ -62,7 +62,8 @@ def translate_html(underlying_translation, html):
     Returns:
         str: Translated HTML string
     """
-    soup = BeautifulSoup(html, "html.parser")
+    minhtml = ' '.join(html.split()) # minified version of html
+    soup = BeautifulSoup(minhtml, "html.parser")
     itag = itag_of_soup(soup)
     translated_tag = translate_tags(underlying_translation, itag)
     translated_soup = soup_of_itag(translated_tag)
