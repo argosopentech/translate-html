@@ -48,7 +48,8 @@ def soup_of_itag(itag):
     if type(itag) == str:
         return bs4.element.NavigableString(itag)
     soup = itag.soup
-    soup.contents = [soup_of_itag(child) for child in itag.children]
+    soup.clear()
+    soup.extend([soup_of_itag(child) for child in itag.children])
     return soup
 
 
